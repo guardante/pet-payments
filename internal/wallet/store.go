@@ -8,6 +8,7 @@ import (
 	"math"
 
 	"github.com/google/uuid"
+	"github.com/guardante/payments/internal/platform/apperr"
 	"github.com/guardante/payments/internal/wallet/walletdb"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -29,8 +30,9 @@ const (
 	Credit = walletdb.EntryDirectionCredit
 )
 
-// ErrAccountNotFound is returned when an account does not exist.
-var ErrAccountNotFound = errors.New("wallet: account not found")
+// ErrAccountNotFound is returned when an account does not exist. It wraps
+// apperr.ErrNotFound, so the HTTP layer answers with a 404.
+var ErrAccountNotFound = fmt.Errorf("account %w", apperr.ErrNotFound)
 
 // Store is the wallet's data access layer, often called a repository. It wraps
 // tye sqlc queries, and owns database transactions.
